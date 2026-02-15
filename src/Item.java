@@ -1,15 +1,16 @@
-public abstract class Item {
+public abstract class Item extends BaseEntity {
 
-    private String title;
+    protected boolean borrowed;
+    protected Member borrowedBy;
 
     public Item(String title) {
-        this.title = title;
+        super(title);
     }
 
-    public String getTitle() {
-        return title;
+    public String getTitle()
+    {
+        return getName();
     }
 
-
-    public abstract void showInfo();
+    public abstract boolean updateStatus();
 }

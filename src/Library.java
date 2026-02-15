@@ -1,28 +1,39 @@
 import java.util.ArrayList;
+import java.util.List;
 
 public class Library {
-    private ArrayList<Book> books = new ArrayList<>();
 
-    public void addBook(Book book) {
-        books.add(book);
+    private final String name;
+    private final List<Item> items = new ArrayList<>();
+    private final List<Member> members = new ArrayList<>();
+
+    public Library(String name) {
+        this.name = name;
     }
 
-    public void showBooks() {
-        System.out.println("کتاب‌های کتابخانه:");
-        for (Book b : books) {
-            System.out.println(
-                    b.getTitle() + " - " +
-                            (b.isBorrowed() ? "امانت داده شده" : "موجود")
-            );
-        }
+    public boolean addItem(Item item) {
+        return items.add(item);
     }
 
-    public Book findBook(String title) {
-        for (Book b : books) {
-            if (b.getTitle().equalsIgnoreCase(title)) {
-                return b;
+    public boolean addMember(Member member) {
+        return members.add(member);
+    }
+
+
+    public List<Item> getAvailableItems() {
+        List<Item> available = new ArrayList<>();
+
+        for (Item item : items) {
+            if (!item.borrowed) {
+                available.add(item);
             }
         }
-        return null;
+        return available;
+    }
+
+    public String getSummary() {
+        return name +
+                " | آیتم‌ها: " + items.size() +
+                " | اعضا: " + members.size();
     }
 }

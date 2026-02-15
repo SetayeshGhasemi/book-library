@@ -1,0 +1,6 @@
+public enum BorrowStatus {
+    SUCCESS,
+    ALREADY_HAS_BOOK,
+    ALREADY_HAS_MAGAZINE,
+    ITEM_NOT_AVAILABLE
+}

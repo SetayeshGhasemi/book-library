@@ -1,10 +1,10 @@
-public class Book extends Item implements Borrowable {
+public class Magazine extends Item implements Borrowable {
 
-    private final String author;
+    private final int issueNumber;
 
-    public Book(String title, String author) {
+    public Magazine(String title, int issueNumber) {
         super(title);
-        this.author = author;
+        this.issueNumber = issueNumber;
     }
 
     @Override
@@ -30,17 +30,10 @@ public class Book extends Item implements Borrowable {
 
     @Override
     public boolean updateStatus() {
-        if (borrowed) {
-            System.out.println(
-                    getTitle() + " by " + author + "=> " +
-                            "امانت داده شده به " + borrowedBy.getName()
-            );
-        } else {
-            System.out.println(
-                    getTitle() + " by " + author + "=> موجود"
-            );
-        }
-
+        System.out.println(
+                getTitle() + " (Issue " + issueNumber + ") => " +
+                        (borrowed ? "امانت داده شده به " + borrowedBy.getName() : "موجود")
+        );
         return borrowed;
     }
 }

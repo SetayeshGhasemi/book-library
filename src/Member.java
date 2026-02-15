@@ -1,52 +1,90 @@
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Member {
-    private String name;
-    private Map<Integer, Book> myBooks;
+public class Member extends BaseEntity {
+
+    private final List<Book> books = new ArrayList<>();
+    private final List<Magazine> magazines = new ArrayList<>();
+
+
 
     public Member(String name) {
-        this.name = name;
-        this.myBooks = new HashMap<>();
+        super(name);
     }
 
-
-    public void addBook() {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.print("عنوان کتاب: ");
-        String title = scanner.nextLine();
-
-        System.out.print("نویسنده: ");
-        String author = scanner.nextLine();
-
-        Book book = new Book(title, author);
-        myBooks.put(book.getId(), book);
-
-        System.out.println("کتاب اضافه شد ");
-    }
-
-
-    public void borrowBook() {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.print("ID کتاب برای امانت گرفتن: ");
-        int id = scanner.nextInt();
-
-        Book book = myBooks.get(id);
-
-        if (book != null) {
-            book.borrow();
-        } else {
-            System.out.println("کتاب با این ID پیدا نشد");
+    public BorrowStatus borrowBook(Book book) {
+        if (!book.isborrowed() && book.borrow(this)) {
+            books.add(book);
+            return BorrowStatus.SUCCESS;
         }
+        return BorrowStatus.ITEM_NOT_AVAILABLE;
     }
 
-    public void showBooks() {
-        System.out.println("کتاب‌های عضو " + name + ":");
-        for (Book book : myBooks.values()) {
-            book.showInfo();
+    public BorrowStatus borrowMagazine(Magazine magazine) {
+        if (!magazine.isborrowed() && magazine.borrow(this)) {
+            magazines.add(magazine);
+            return BorrowStatus.SUCCESS;
         }
+        return BorrowStatus.ITEM_NOT_AVAILABLE;
+    }
+
+
+    public boolean returnBook(int bookId) {
+
+        Book bookToReturn = null;
+        for (Book book : books) {
+
+            if (book.getId() == bookId) {
+                bookToReturn = book;
+                break;
+            }
+        }
+
+
+        if (bookToReturn == null) {
+            return false;
+        }
+
+
+        if (bookToReturn.giveBack()) {
+            books.remove(bookToReturn);
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean returnMagazine(Magazine magazine) {
+        if (!magazines.contains(magazine)) return false;
+
+        if (magazine.giveBack()) {
+            magazines.remove(magazine);
+            return true;
+        }
+
+        return false;
+    }
+
+    public void updateStatus() {
+        System.out.println("وضعیت امانت‌های " + getName() + ":");
+
+        if (books.isEmpty() && magazines.isEmpty()) {
+            System.out.println("هیچ آیتمی امانت گرفته نشده");
+        }
+
+        for (Book book : books) {
+            book.updateStatus();
+        }
+
+        for (Magazine magazine : magazines) {
+            magazine.updateStatus();
+        }
+
+    }
+
+
+    public List<Book> getBooks() {
+        return books;
+
     }
 }
